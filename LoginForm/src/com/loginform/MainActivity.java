@@ -59,11 +59,9 @@ public class MainActivity extends Activity implements OnClickListener {
 	private void setup() {
 		email = (EditText) findViewById(R.id.email);
 		jelszo = (EditText) findViewById(R.id.jelszo);
-		login = (Button) findViewById(R.id.login);
-		kijelent = (Button) findViewById(R.id.kijelentkezes);
+		login = (Button) findViewById(R.id.login); //clicklistener a layoutban talalhato xml-ben van hozzaadva tulajdonsagkent
+		kijelent = (Button) findViewById(R.id.kijelentkezes);//clicklistener a layoutban talalhato xml-ben van hozzaadva tulajdonsagkent
 		status = (EditText) findViewById(R.id.tvstatus);
-		login.setOnClickListener(this);
-		kijelent.setOnClickListener(this);
 	}
 	
 	public void onClick(View v) {
@@ -75,7 +73,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			login();
 			
 			break;
-		//beiras kijelentkezesre
+		
 		case R.id.kijelentkezes:
 		
 			kijelentkezes();
@@ -89,6 +87,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		try{
 			
+		//bejelentkezes post metodussal, majd cookie kiiratasa	
 		CookieStore cookieStore = new BasicCookieStore();	
 			
 		httpclient = new DefaultHttpClient();
@@ -103,9 +102,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		nameValuePairs.add(new BasicNameValuePair("jelszo", jelszo.getText().toString().trim() ));
 				
 		httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		//httppost.setHeader("accept", "application/xml");
+		//httppost.setHeader("accept", "application/xml"); ezt akkor hasznalom, ha a header-bol az xml-t akarom lekerni
 		
-		response = httpclient.execute(httppost,ctx); // ezt kellene valahol latni
+		response = httpclient.execute(httppost,ctx);
 		
 		List<Cookie> cookies = cookieStore.getCookies();
 		if( !cookies.isEmpty() ){
@@ -123,7 +122,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 			
 		}catch (Exception e){
-			//Log.d(TAG, "VmilyenException" ,e);
+			Log.d(TAG, "Hiba ha a bejelentkezesnel van gond" ,e);
 			e.printStackTrace();
 		}  
 		
@@ -135,7 +134,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		try{
 			String URL = "http://www.aktivferfi.hu/index.php?akcio=kijelentkezes"; 
 			
-			//?kijelentkezes a parameter kell elkuldeni
+			//kijelentkezes a get metodussal tortenik
 			String SetServerString = "";
 			
 			HttpClient Client = new DefaultHttpClient();
@@ -143,19 +142,14 @@ public class MainActivity extends Activity implements OnClickListener {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 	        SetServerString = Client.execute(httpget, responseHandler);
 	        
-	        //httppost
 	        httpget.setHeader("accept", "application/xml");
-	        // cookie jon vissza es a kezolap xml-je
+	        // cookie jon vissza es a kezdolap xml-je
 	        
 	        status.setText(SetServerString);
-	        /*
-	        if (Client.equalsIgnoreCase("User Found")){
-				startActivity(new Intent(MainActivity.this, UserPage.class));
-			}
-	        */
+	        
 		}
 		catch(Exception Ex){
-			Log.i(TAG, "Ez van");
+			Log.i(TAG, "Hiba a kijelentkezesnel");
 		}   
 		
 	}
